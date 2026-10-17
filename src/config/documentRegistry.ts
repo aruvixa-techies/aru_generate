@@ -1,4 +1,4 @@
-import type { DocumentTypeOption, InternshipLetterData, InternshipOfferData } from '../types/document';
+import type { DocumentTypeOption, InternshipLetterData, InternshipOfferData, JobOfferData } from '../types/document';
 
 export const DOCUMENT_TYPES: DocumentTypeOption[] = [
   {
@@ -20,19 +20,19 @@ export const DOCUMENT_TYPES: DocumentTypeOption[] = [
     estimatedTime: '< 1 min'
   },
   {
+    id: 'job-offer',
+    title: 'Job Offer Letter',
+    category: 'Recruitment',
+    description: 'Official full-time employment agreement detailing designation, CTC breakdown, joining date, and policies.',
+    badge: 'Active Template',
+    status: 'active',
+    estimatedTime: '< 1 min'
+  },
+  {
     id: 'internship-recommendation',
     title: 'Letter of Recommendation (LOR)',
     category: 'Letters',
     description: 'Comprehensive performance endorsement documenting key deliverables and professional strengths.',
-    badge: 'Coming Soon',
-    status: 'coming-soon',
-    estimatedTime: 'Planned'
-  },
-  {
-    id: 'job-offer',
-    title: 'Job Offer Letter',
-    category: 'Recruitment',
-    description: 'Comprehensive full-time employment agreement with CTC breakdown and company policies.',
     badge: 'Coming Soon',
     status: 'coming-soon',
     estimatedTime: 'Planned'
@@ -88,6 +88,35 @@ export const OFFICIAL_OFFER_LETTER_DATA: InternshipOfferData = {
     'Developing machine learning models and evaluating their performance.',
     'Collaborating with the software development team to integrate data-driven solutions.',
     'Generating reports and visualizations to support decision-making.'
+  ],
+  companyName: 'Aruvixa tech solutions',
+  companyEmail: 'aruvixa@aruvixa.com',
+  companyWebsite: 'www.aruvixa.com',
+  companyPhone: '8122990435',
+  companyAddress: 'Chennai, Tamil Nadu, India',
+  signatoryName: 'Ganesh Balaji S',
+  signatoryRole: '[Founder & Director]',
+  includeSignature: true,
+  includeSeal: true
+};
+
+export const OFFICIAL_JOB_OFFER_DATA: JobOfferData = {
+  candidateName: 'Suraj S',
+  candidateAddress: 'Plot No. 14, 2nd Main Road, Anna Nagar',
+  city: 'Chennai, Tamil Nadu - 600040',
+  letterDate: '2026-10-17',
+  salutationName: 'Suraj',
+  designation: 'Associate Software Engineer',
+  department: 'Full Stack Engineering & Cloud Architecture',
+  dateOfJoining: '2026-11-02',
+  annualCtc: 'INR 6,50,000 per annum',
+  workLocation: 'Chennai, Tamil Nadu (Hybrid)',
+  probationPeriod: '3 Months from Date of Joining',
+  responsibilities: [
+    'Architecting, building, and deploying scalable web applications and RESTful backend APIs.',
+    'Collaborating with UI/UX engineers and product stakeholders to ship reliable client features.',
+    'Participating in architectural design reviews, system benchmarking, and sprint milestones.',
+    'Upholding code quality, continuous integration pipelines, and strict cybersecurity guidelines.'
   ],
   companyName: 'Aruvixa tech solutions',
   companyEmail: 'aruvixa@aruvixa.com',

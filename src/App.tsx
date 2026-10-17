@@ -5,17 +5,29 @@ import { LetterForm } from './components/form/LetterForm';
 import { LetterPreview } from './components/preview/LetterPreview';
 import { OfferLetterForm } from './components/form/OfferLetterForm';
 import { OfferLetterPreview } from './components/preview/OfferLetterPreview';
+import { JobOfferForm } from './components/form/JobOfferForm';
+import { JobOfferPreview } from './components/preview/JobOfferPreview';
 import { PreviewToolbar } from './components/preview/PreviewToolbar';
-import type { InternshipLetterData, InternshipOfferData, DocumentTypeOption, ValidationErrors } from './types/document';
-import { OFFICIAL_COMPANY_TEMPLATE_DATA, OFFICIAL_OFFER_LETTER_DATA } from './config/documentRegistry';
+import type {
+  InternshipLetterData,
+  InternshipOfferData,
+  JobOfferData,
+  DocumentTypeOption,
+  ValidationErrors
+} from './types/document';
+import {
+  OFFICIAL_COMPANY_TEMPLATE_DATA,
+  OFFICIAL_OFFER_LETTER_DATA,
+  OFFICIAL_JOB_OFFER_DATA
+} from './config/documentRegistry';
 import { exportElementToPdf, sanitizeFileName } from './utils/pdfExport';
 import demoCompletionLetter from './assets/templates/demo_internship_letter.png';
 import demoOfferLetter from './assets/templates/demo_internship_offer_letter.png';
 import { ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [selectedDocId, setSelectedDocId] = useState<string>('internship-offer');
-  
+  const [selectedDocId, setSelectedDocId] = useState<string>('job-offer');
+
   // State for Internship Completion Letter
   const [completionData, setCompletionData] = useState<InternshipLetterData>(OFFICIAL_COMPANY_TEMPLATE_DATA);
   const [completionErrors, setCompletionErrors] = useState<ValidationErrors>({});
@@ -23,6 +35,10 @@ export const App: React.FC = () => {
   // State for Internship Offer Letter
   const [offerData, setOfferData] = useState<InternshipOfferData>(OFFICIAL_OFFER_LETTER_DATA);
   const [offerErrors, setOfferErrors] = useState<ValidationErrors>({});
+
+  // State for Full-Time Job Offer Letter
+  const [jobData, setJobData] = useState<JobOfferData>(OFFICIAL_JOB_OFFER_DATA);
+  const [jobErrors, setJobErrors] = useState<ValidationErrors>({});
 
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
@@ -32,16 +48,12 @@ export const App: React.FC = () => {
 
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Completion letter field updater
+  // Field change handlers
   const handleCompletionFieldChange = <K extends keyof InternshipLetterData>(
     field: K,
     value: InternshipLetterData[K]
   ) => {
-    setCompletionData((prev) => ({
-      ...prev,
-      [field]: value
-    }));
-
+    setCompletionData((prev) => ({ ...prev, [field]: value }));
     if (completionErrors[field]) {
       setCompletionErrors((prev) => {
         const updated = { ...prev };
@@ -51,16 +63,11 @@ export const App: React.FC = () => {
     }
   };
 
-  // Offer letter field updater
   const handleOfferFieldChange = <K extends keyof InternshipOfferData>(
     field: K,
     value: InternshipOfferData[K]
   ) => {
-    setOfferData((prev) => ({
-      ...prev,
-      [field]: value
-    }));
-
+    setOfferData((prev) => ({ ...prev, [field]: value }));
     if (offerErrors[field]) {
       setOfferErrors((prev) => {
         const updated = { ...prev };
@@ -70,6 +77,21 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleJobFieldChange = <K extends keyof JobOfferData>(
+    field: K,
+    value: JobOfferData[K]
+  ) => {
+    setJobData((prev) => ({ ...prev, [field]: value }));
+    if (jobErrors[field]) {
+      setJobErrors((prev) => {
+        const updated = { ...prev };
+        delete updated[field];
+        return updated;
+      });
+    }
+  };
+
+  // Validation functions
   const validateCompletion = (): boolean => {
     const newErrors: ValidationErrors = {};
     if (!completionData.internName.trim()) newErrors.internName = "Intern's full name is required";
@@ -102,15 +124,41 @@ export const App: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateJob = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    if (!jobData.candidateName.trim()) newErrors.candidateName = 'Candidate full name is required';
+    if (!jobData.candidateAddress.trim()) newErrors.candidateAddress = 'Candidate address is required';
+    if (!jobData.city.trim()) newErrors.city = 'City & pincode is required';
+    if (!jobData.designation.trim()) newErrors.designation = 'Designation is required';
+    if (!jobData.department.trim()) newErrors.department = 'Department is required';
+    if (!jobData.annualCtc.trim()) newErrors.annualCtc = 'Annual CTC is required';
+    if (!jobData.dateOfJoining) newErrors.dateOfJoining = 'Date of joining is required';
+    if (!jobData.letterDate) newErrors.letterDate = 'Letter date is required';
+
+    setJobErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleGenerate = () => {
-    const isOffer = selectedDocId === 'internship-offer';
-    const isValid = isOffer ? validateOffer() : validateCompletion();
+    let isValid = false;
+    let docLabel = '';
+
+    if (selectedDocId === 'job-offer') {
+      isValid = validateJob();
+      docLabel = 'Job Offer Letter';
+    } else if (selectedDocId === 'internship-offer') {
+      isValid = validateOffer();
+      docLabel = 'Internship Offer Letter';
+    } else {
+      isValid = validateCompletion();
+      docLabel = 'Internship Completion Letter';
+    }
 
     if (isValid) {
       setViewMode('generated');
       setNotification({
         type: 'success',
-        message: `${isOffer ? 'Internship Offer Letter' : 'Internship Completion Letter'} synchronized successfully.`
+        message: `${docLabel} synchronized successfully.`
       });
       setTimeout(() => setNotification(null), 3500);
     } else {
@@ -123,7 +171,37 @@ export const App: React.FC = () => {
   };
 
   const handleReset = () => {
-    if (selectedDocId === 'internship-offer') {
+    if (selectedDocId === 'job-offer') {
+      setJobData({
+        candidateName: '',
+        candidateAddress: '',
+        city: 'Chennai, Tamil Nadu - 600040',
+        letterDate: new Date().toISOString().split('T')[0],
+        salutationName: '',
+        designation: '',
+        department: '',
+        dateOfJoining: '',
+        annualCtc: '',
+        workLocation: 'Chennai, Tamil Nadu (Hybrid)',
+        probationPeriod: '3 Months from Date of Joining',
+        responsibilities: [
+          'Architecting, building, and deploying scalable web applications and RESTful backend APIs.',
+          'Collaborating with UI/UX engineers and product stakeholders to ship reliable client features.',
+          'Participating in architectural design reviews, system benchmarking, and sprint milestones.',
+          'Upholding code quality, continuous integration pipelines, and strict cybersecurity guidelines.'
+        ],
+        companyName: 'Aruvixa tech solutions',
+        companyEmail: 'aruvixa@aruvixa.com',
+        companyWebsite: 'www.aruvixa.com',
+        companyPhone: '8122990435',
+        companyAddress: 'Chennai, Tamil Nadu, India',
+        signatoryName: 'Ganesh Balaji S',
+        signatoryRole: '[Founder & Director]',
+        includeSignature: true,
+        includeSeal: true
+      });
+      setJobErrors({});
+    } else if (selectedDocId === 'internship-offer') {
       setOfferData({
         candidateName: '',
         degreeAndBranch: '',
@@ -182,7 +260,14 @@ export const App: React.FC = () => {
   };
 
   const handleLoadSample = () => {
-    if (selectedDocId === 'internship-offer') {
+    if (selectedDocId === 'job-offer') {
+      setJobData(OFFICIAL_JOB_OFFER_DATA);
+      setJobErrors({});
+      setNotification({
+        type: 'success',
+        message: 'Aruvixa Full-Time Job Offer demo data loaded.'
+      });
+    } else if (selectedDocId === 'internship-offer') {
       setOfferData(OFFICIAL_OFFER_LETTER_DATA);
       setOfferErrors({});
       setNotification({
@@ -201,8 +286,23 @@ export const App: React.FC = () => {
   };
 
   const handleDownloadPdf = async () => {
-    const isOffer = selectedDocId === 'internship-offer';
-    const isValid = isOffer ? validateOffer() : validateCompletion();
+    let isValid = false;
+    let prefix = '';
+    let targetName = '';
+
+    if (selectedDocId === 'job-offer') {
+      isValid = validateJob();
+      prefix = 'Job_Offer_Letter';
+      targetName = jobData.candidateName;
+    } else if (selectedDocId === 'internship-offer') {
+      isValid = validateOffer();
+      prefix = 'Internship_Offer_Letter';
+      targetName = offerData.candidateName;
+    } else {
+      isValid = validateCompletion();
+      prefix = 'Internship_Completion_Letter';
+      targetName = completionData.internName;
+    }
 
     if (!isValid) {
       setNotification({
@@ -226,10 +326,7 @@ export const App: React.FC = () => {
 
     try {
       setIsDownloading(true);
-      const prefix = isOffer ? 'Internship_Offer_Letter' : 'Internship_Completion_Letter';
-      const targetName = isOffer ? offerData.candidateName : completionData.internName;
       const filename = sanitizeFileName(targetName, prefix);
-      
       await exportElementToPdf(previewRef.current, filename, 'portrait');
       setDownloadSuccess(true);
       setNotification({
@@ -251,8 +348,10 @@ export const App: React.FC = () => {
   };
 
   const handlePrint = () => {
-    const isOffer = selectedDocId === 'internship-offer';
-    const isValid = isOffer ? validateOffer() : validateCompletion();
+    let isValid = false;
+    if (selectedDocId === 'job-offer') isValid = validateJob();
+    else if (selectedDocId === 'internship-offer') isValid = validateOffer();
+    else isValid = validateCompletion();
 
     if (isValid) {
       setViewMode('generated');
@@ -271,8 +370,16 @@ export const App: React.FC = () => {
     setSelectedDocId(doc.id);
   };
 
-  const isOfferDoc = selectedDocId === 'internship-offer';
-  const activeDemoImage = isOfferDoc ? demoOfferLetter : demoCompletionLetter;
+  // Determine active document label and reference demo
+  let activeDocLabel = 'Job Offer Letter';
+  let activeDemoImage = demoOfferLetter;
+  if (selectedDocId === 'internship-letter') {
+    activeDocLabel = 'Internship Completion Letter';
+    activeDemoImage = demoCompletionLetter;
+  } else if (selectedDocId === 'internship-offer') {
+    activeDocLabel = 'Internship Offer Letter';
+    activeDemoImage = demoOfferLetter;
+  }
 
   return (
     <div className="app-layout">
@@ -285,12 +392,11 @@ export const App: React.FC = () => {
           onSelectDoc={handleSelectDoc}
         />
 
-        {/* Template Ingestion Status Notification */}
+        {/* Template Status Banner */}
         <div className="template-notice-box">
           <ShieldCheck size={20} color="#15803d" style={{ flexShrink: 0 }} />
           <div>
-            <strong>Active Document Template:</strong> Generating{' '}
-            <strong>{isOfferDoc ? 'Internship Offer Letter' : 'Internship Completion Letter'}</strong> using the official{' '}
+            <strong>Active Document Template:</strong> Generating <strong>{activeDocLabel}</strong> using the official{' '}
             <strong>Aruvixa Tech Solutions</strong> letterhead with verified seal and Director's signature.
           </div>
         </div>
@@ -323,7 +429,16 @@ export const App: React.FC = () => {
         {/* Split View: Form and Preview */}
         <section className="workspace-grid" style={{ gridTemplateColumns: '440px 1fr' }}>
           {/* Left Column: Form according to selected document */}
-          {isOfferDoc ? (
+          {selectedDocId === 'job-offer' ? (
+            <JobOfferForm
+              formData={jobData}
+              onChange={handleJobFieldChange}
+              onReset={handleReset}
+              onLoadSample={handleLoadSample}
+              onGenerate={handleGenerate}
+              errors={jobErrors}
+            />
+          ) : selectedDocId === 'internship-offer' ? (
             <OfferLetterForm
               formData={offerData}
               onChange={handleOfferFieldChange}
@@ -375,7 +490,12 @@ export const App: React.FC = () => {
                     transition: 'transform 0.15s ease'
                   }}
                 >
-                  {isOfferDoc ? (
+                  {selectedDocId === 'job-offer' ? (
+                    <JobOfferPreview
+                      ref={previewRef}
+                      data={jobData}
+                    />
+                  ) : selectedDocId === 'internship-offer' ? (
                     <OfferLetterPreview
                       ref={previewRef}
                       data={offerData}

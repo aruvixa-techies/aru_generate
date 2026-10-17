@@ -16,39 +16,63 @@ export type PronounSet = 'he/his/him' | 'she/her/her' | 'they/their/them';
 export interface InternshipLetterData {
   salutation: Salutation;
   internName: string;
-  academicYearDegree: string; // e.g. "a 3rd-year student of B.Tech."
-  departmentSpecialization: string; // e.g. "Computer Science and Engineering"
-  collegeNameAndLocation: string; // e.g. "Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College, Chennai"
-  domainRole: string; // e.g. "Full Stack Development"
-  startDate: string; // ISO date YYYY-MM-DD
-  completionDate: string; // ISO date YYYY-MM-DD
-  letterDate: string; // ISO date YYYY-MM-DD
+  academicYearDegree: string;
+  departmentSpecialization: string;
+  collegeNameAndLocation: string;
+  domainRole: string;
+  startDate: string;
+  completionDate: string;
+  letterDate: string;
   pronounSet: PronounSet;
-  signatoryName: string; // "Ganesh Balaji S"
-  signatoryRole: string; // "[Founder & Director]"
-  companyName: string; // "Aruvixa tech solutions"
-  companyEmail: string; // "aruvixa@aruvixa.com"
-  companyWebsite: string; // "www.aruvixa.com"
-  companyPhone: string; // "8122990435"
-  companyAddress: string; // "Chennai, Tamil Nadu, India"
+  signatoryName: string;
+  signatoryRole: string;
+  companyName: string;
+  companyEmail: string;
+  companyWebsite: string;
+  companyPhone: string;
+  companyAddress: string;
   includeSignature: boolean;
   includeSeal: boolean;
 }
 
 export interface InternshipOfferData {
+  candidateName: string;
+  degreeAndBranch: string;
+  yearOfStudy: string;
+  collegeName: string;
+  city: string;
+  letterDate: string;
+  salutationName: string;
+  department: string;
+  focusDomain: string;
+  startDate: string;
+  endDate: string;
+  mode: string;
+  duties: string[];
+  companyName: string;
+  companyEmail: string;
+  companyWebsite: string;
+  companyPhone: string;
+  companyAddress: string;
+  signatoryName: string;
+  signatoryRole: string;
+  includeSignature: boolean;
+  includeSeal: boolean;
+}
+
+export interface JobOfferData {
   candidateName: string; // e.g. "Suraj S"
-  degreeAndBranch: string; // e.g. "B.Tech CSE"
-  yearOfStudy: string; // e.g. "3rd Year"
-  collegeName: string; // e.g. "Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College"
-  city: string; // e.g. "Chennai"
-  letterDate: string; // ISO date e.g. "2026-07-17"
+  candidateAddress: string; // e.g. "Plot No. 14, 2nd Main Road, Anna Nagar"
+  city: string; // e.g. "Chennai, Tamil Nadu - 600040"
+  letterDate: string; // ISO date e.g. "2026-10-17"
   salutationName: string; // e.g. "Suraj"
-  department: string; // e.g. "Full Stack Development"
-  focusDomain: string; // e.g. "Artificial Intelligence"
-  startDate: string; // ISO date e.g. "2026-07-18"
-  endDate: string; // ISO date e.g. "2026-09-30"
-  mode: string; // "Online" | "Offline" | "Hybrid"
-  duties: string[]; // List of primary duties
+  designation: string; // e.g. "Associate Software Engineer"
+  department: string; // e.g. "Full Stack Development & Cloud Architecture"
+  dateOfJoining: string; // ISO date e.g. "2026-11-01"
+  annualCtc: string; // e.g. "INR 6,50,000 per annum"
+  workLocation: string; // e.g. "Chennai, Tamil Nadu (Hybrid)"
+  probationPeriod: string; // e.g. "3 Months from Date of Joining"
+  responsibilities: string[]; // 4 bullet points
   companyName: string; // "Aruvixa tech solutions"
   companyEmail: string; // "aruvixa@aruvixa.com"
   companyWebsite: string; // "www.aruvixa.com"
