@@ -61,18 +61,41 @@ export interface InternshipOfferData {
 }
 
 export interface JobOfferData {
+  candidateName: string;
+  candidateAddress: string;
+  city: string;
+  letterDate: string;
+  salutationName: string;
+  designation: string;
+  department: string;
+  dateOfJoining: string;
+  annualCtc: string;
+  workLocation: string;
+  probationPeriod: string;
+  responsibilities: string[];
+  companyName: string;
+  companyEmail: string;
+  companyWebsite: string;
+  companyPhone: string;
+  companyAddress: string;
+  signatoryName: string;
+  signatoryRole: string;
+  includeSignature: boolean;
+  includeSeal: boolean;
+}
+
+export interface LorData {
+  candidateSalutation: Salutation;
   candidateName: string; // e.g. "Suraj S"
-  candidateAddress: string; // e.g. "Plot No. 14, 2nd Main Road, Anna Nagar"
-  city: string; // e.g. "Chennai, Tamil Nadu - 600040"
+  candidateRole: string; // e.g. "Full Stack Engineering Intern"
+  department: string; // e.g. "Software Engineering & Cloud Architecture"
+  startDate: string; // ISO date e.g. "2026-07-18"
+  completionDate: string; // ISO date e.g. "2026-09-20"
   letterDate: string; // ISO date e.g. "2026-10-17"
-  salutationName: string; // e.g. "Suraj"
-  designation: string; // e.g. "Associate Software Engineer"
-  department: string; // e.g. "Full Stack Development & Cloud Architecture"
-  dateOfJoining: string; // ISO date e.g. "2026-11-01"
-  annualCtc: string; // e.g. "INR 6,50,000 per annum"
-  workLocation: string; // e.g. "Chennai, Tamil Nadu (Hybrid)"
-  probationPeriod: string; // e.g. "3 Months from Date of Joining"
-  responsibilities: string[]; // 4 bullet points
+  pronounSet: PronounSet;
+  keyContributions: string; // Notable technical accomplishments
+  softSkills: string; // Professional qualities
+  recommendationStrength: string; // e.g. "enthusiastically without reservation"
   companyName: string; // "Aruvixa tech solutions"
   companyEmail: string; // "aruvixa@aruvixa.com"
   companyWebsite: string; // "www.aruvixa.com"

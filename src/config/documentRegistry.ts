@@ -1,4 +1,10 @@
-import type { DocumentTypeOption, InternshipLetterData, InternshipOfferData, JobOfferData } from '../types/document';
+import type {
+  DocumentTypeOption,
+  InternshipLetterData,
+  InternshipOfferData,
+  JobOfferData,
+  LorData
+} from '../types/document';
 
 export const DOCUMENT_TYPES: DocumentTypeOption[] = [
   {
@@ -32,10 +38,10 @@ export const DOCUMENT_TYPES: DocumentTypeOption[] = [
     id: 'internship-recommendation',
     title: 'Letter of Recommendation (LOR)',
     category: 'Letters',
-    description: 'Comprehensive performance endorsement documenting key deliverables and professional strengths.',
-    badge: 'Coming Soon',
-    status: 'coming-soon',
-    estimatedTime: 'Planned'
+    description: 'Comprehensive performance endorsement documenting key deliverables, leadership, and professional strengths.',
+    badge: 'Active Template',
+    status: 'active',
+    estimatedTime: '< 1 min'
   },
   {
     id: 'interview-call',
@@ -118,6 +124,31 @@ export const OFFICIAL_JOB_OFFER_DATA: JobOfferData = {
     'Participating in architectural design reviews, system benchmarking, and sprint milestones.',
     'Upholding code quality, continuous integration pipelines, and strict cybersecurity guidelines.'
   ],
+  companyName: 'Aruvixa tech solutions',
+  companyEmail: 'aruvixa@aruvixa.com',
+  companyWebsite: 'www.aruvixa.com',
+  companyPhone: '8122990435',
+  companyAddress: 'Chennai, Tamil Nadu, India',
+  signatoryName: 'Ganesh Balaji S',
+  signatoryRole: '[Founder & Director]',
+  includeSignature: true,
+  includeSeal: true
+};
+
+export const OFFICIAL_LOR_DATA: LorData = {
+  candidateSalutation: 'Mr.',
+  candidateName: 'Suraj S',
+  candidateRole: 'Full Stack Engineering Intern',
+  department: 'Software Engineering & Cloud Architecture',
+  startDate: '2026-07-18',
+  completionDate: '2026-09-20',
+  letterDate: '2026-10-17',
+  pronounSet: 'he/his/him',
+  keyContributions:
+    'Suraj exhibited a thorough understanding of full-stack system architecture, modern web frameworks, and RESTful API integrations. He was instrumental in developing responsive web interfaces, optimizing backend data pipelines, and consistently authoring clean, well-documented, and robust production code.',
+  softSkills:
+    'Beyond technical excellence, Suraj demonstrated admirable professionalism, intellectual curiosity, and proactive ownership of sprint milestones with minimal supervision.',
+  recommendationStrength: 'enthusiastically and without reservation',
   companyName: 'Aruvixa tech solutions',
   companyEmail: 'aruvixa@aruvixa.com',
   companyWebsite: 'www.aruvixa.com',

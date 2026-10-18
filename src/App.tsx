@@ -7,18 +7,22 @@ import { OfferLetterForm } from './components/form/OfferLetterForm';
 import { OfferLetterPreview } from './components/preview/OfferLetterPreview';
 import { JobOfferForm } from './components/form/JobOfferForm';
 import { JobOfferPreview } from './components/preview/JobOfferPreview';
+import { LorForm } from './components/form/LorForm';
+import { LorPreview } from './components/preview/LorPreview';
 import { PreviewToolbar } from './components/preview/PreviewToolbar';
 import type {
   InternshipLetterData,
   InternshipOfferData,
   JobOfferData,
+  LorData,
   DocumentTypeOption,
   ValidationErrors
 } from './types/document';
 import {
   OFFICIAL_COMPANY_TEMPLATE_DATA,
   OFFICIAL_OFFER_LETTER_DATA,
-  OFFICIAL_JOB_OFFER_DATA
+  OFFICIAL_JOB_OFFER_DATA,
+  OFFICIAL_LOR_DATA
 } from './config/documentRegistry';
 import { exportElementToPdf, sanitizeFileName } from './utils/pdfExport';
 import demoCompletionLetter from './assets/templates/demo_internship_letter.png';
@@ -26,7 +30,7 @@ import demoOfferLetter from './assets/templates/demo_internship_offer_letter.png
 import { ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [selectedDocId, setSelectedDocId] = useState<string>('job-offer');
+  const [selectedDocId, setSelectedDocId] = useState<string>('internship-recommendation');
 
   // State for Internship Completion Letter
   const [completionData, setCompletionData] = useState<InternshipLetterData>(OFFICIAL_COMPANY_TEMPLATE_DATA);
@@ -39,6 +43,10 @@ export const App: React.FC = () => {
   // State for Full-Time Job Offer Letter
   const [jobData, setJobData] = useState<JobOfferData>(OFFICIAL_JOB_OFFER_DATA);
   const [jobErrors, setJobErrors] = useState<ValidationErrors>({});
+
+  // State for Letter of Recommendation (LOR)
+  const [lorData, setLorData] = useState<LorData>(OFFICIAL_LOR_DATA);
+  const [lorErrors, setLorErrors] = useState<ValidationErrors>({});
 
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [downloadSuccess, setDownloadSuccess] = useState<boolean>(false);
@@ -84,6 +92,20 @@ export const App: React.FC = () => {
     setJobData((prev) => ({ ...prev, [field]: value }));
     if (jobErrors[field]) {
       setJobErrors((prev) => {
+        const updated = { ...prev };
+        delete updated[field];
+        return updated;
+      });
+    }
+  };
+
+  const handleLorFieldChange = <K extends keyof LorData>(
+    field: K,
+    value: LorData[K]
+  ) => {
+    setLorData((prev) => ({ ...prev, [field]: value }));
+    if (lorErrors[field]) {
+      setLorErrors((prev) => {
         const updated = { ...prev };
         delete updated[field];
         return updated;
@@ -139,11 +161,27 @@ export const App: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateLor = (): boolean => {
+    const newErrors: ValidationErrors = {};
+    if (!lorData.candidateName.trim()) newErrors.candidateName = 'Candidate full name is required';
+    if (!lorData.candidateRole.trim()) newErrors.candidateRole = 'Role is required';
+    if (!lorData.department.trim()) newErrors.department = 'Department is required';
+    if (!lorData.startDate) newErrors.startDate = 'Start date is required';
+    if (!lorData.completionDate) newErrors.completionDate = 'Completion date is required';
+    if (!lorData.letterDate) newErrors.letterDate = 'Letter date is required';
+
+    setLorErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleGenerate = () => {
     let isValid = false;
     let docLabel = '';
 
-    if (selectedDocId === 'job-offer') {
+    if (selectedDocId === 'internship-recommendation') {
+      isValid = validateLor();
+      docLabel = 'Letter of Recommendation (LOR)';
+    } else if (selectedDocId === 'job-offer') {
       isValid = validateJob();
       docLabel = 'Job Offer Letter';
     } else if (selectedDocId === 'internship-offer') {
@@ -171,7 +209,31 @@ export const App: React.FC = () => {
   };
 
   const handleReset = () => {
-    if (selectedDocId === 'job-offer') {
+    if (selectedDocId === 'internship-recommendation') {
+      setLorData({
+        candidateSalutation: 'Mr.',
+        candidateName: '',
+        candidateRole: '',
+        department: '',
+        startDate: '',
+        completionDate: '',
+        letterDate: new Date().toISOString().split('T')[0],
+        pronounSet: 'he/his/him',
+        keyContributions: '',
+        softSkills: '',
+        recommendationStrength: 'enthusiastically and without reservation',
+        companyName: 'Aruvixa tech solutions',
+        companyEmail: 'aruvixa@aruvixa.com',
+        companyWebsite: 'www.aruvixa.com',
+        companyPhone: '8122990435',
+        companyAddress: 'Chennai, Tamil Nadu, India',
+        signatoryName: 'Ganesh Balaji S',
+        signatoryRole: '[Founder & Director]',
+        includeSignature: true,
+        includeSeal: true
+      });
+      setLorErrors({});
+    } else if (selectedDocId === 'job-offer') {
       setJobData({
         candidateName: '',
         candidateAddress: '',
@@ -260,7 +322,14 @@ export const App: React.FC = () => {
   };
 
   const handleLoadSample = () => {
-    if (selectedDocId === 'job-offer') {
+    if (selectedDocId === 'internship-recommendation') {
+      setLorData(OFFICIAL_LOR_DATA);
+      setLorErrors({});
+      setNotification({
+        type: 'success',
+        message: 'Aruvixa Letter of Recommendation demo data loaded.'
+      });
+    } else if (selectedDocId === 'job-offer') {
       setJobData(OFFICIAL_JOB_OFFER_DATA);
       setJobErrors({});
       setNotification({
@@ -290,7 +359,11 @@ export const App: React.FC = () => {
     let prefix = '';
     let targetName = '';
 
-    if (selectedDocId === 'job-offer') {
+    if (selectedDocId === 'internship-recommendation') {
+      isValid = validateLor();
+      prefix = 'Letter_Of_Recommendation';
+      targetName = lorData.candidateName;
+    } else if (selectedDocId === 'job-offer') {
       isValid = validateJob();
       prefix = 'Job_Offer_Letter';
       targetName = jobData.candidateName;
@@ -349,7 +422,8 @@ export const App: React.FC = () => {
 
   const handlePrint = () => {
     let isValid = false;
-    if (selectedDocId === 'job-offer') isValid = validateJob();
+    if (selectedDocId === 'internship-recommendation') isValid = validateLor();
+    else if (selectedDocId === 'job-offer') isValid = validateJob();
     else if (selectedDocId === 'internship-offer') isValid = validateOffer();
     else isValid = validateCompletion();
 
@@ -371,13 +445,16 @@ export const App: React.FC = () => {
   };
 
   // Determine active document label and reference demo
-  let activeDocLabel = 'Job Offer Letter';
+  let activeDocLabel = 'Letter of Recommendation (LOR)';
   let activeDemoImage = demoOfferLetter;
   if (selectedDocId === 'internship-letter') {
     activeDocLabel = 'Internship Completion Letter';
     activeDemoImage = demoCompletionLetter;
   } else if (selectedDocId === 'internship-offer') {
     activeDocLabel = 'Internship Offer Letter';
+    activeDemoImage = demoOfferLetter;
+  } else if (selectedDocId === 'job-offer') {
+    activeDocLabel = 'Job Offer Letter';
     activeDemoImage = demoOfferLetter;
   }
 
@@ -429,7 +506,16 @@ export const App: React.FC = () => {
         {/* Split View: Form and Preview */}
         <section className="workspace-grid" style={{ gridTemplateColumns: '440px 1fr' }}>
           {/* Left Column: Form according to selected document */}
-          {selectedDocId === 'job-offer' ? (
+          {selectedDocId === 'internship-recommendation' ? (
+            <LorForm
+              formData={lorData}
+              onChange={handleLorFieldChange}
+              onReset={handleReset}
+              onLoadSample={handleLoadSample}
+              onGenerate={handleGenerate}
+              errors={lorErrors}
+            />
+          ) : selectedDocId === 'job-offer' ? (
             <JobOfferForm
               formData={jobData}
               onChange={handleJobFieldChange}
@@ -490,7 +576,12 @@ export const App: React.FC = () => {
                     transition: 'transform 0.15s ease'
                   }}
                 >
-                  {selectedDocId === 'job-offer' ? (
+                  {selectedDocId === 'internship-recommendation' ? (
+                    <LorPreview
+                      ref={previewRef}
+                      data={lorData}
+                    />
+                  ) : selectedDocId === 'job-offer' ? (
                     <JobOfferPreview
                       ref={previewRef}
                       data={jobData}
