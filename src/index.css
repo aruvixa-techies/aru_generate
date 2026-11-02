@@ -318,6 +318,49 @@ input, select, textarea {
   margin-left: 2px;
 }
 
+.optional-badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  margin-left: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-field-hint {
+  font-size: 0.74rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+.preset-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.preset-chip {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.preset-chip:hover {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
 .form-input {
   width: 100%;
   padding: 0.55rem 0.75rem;

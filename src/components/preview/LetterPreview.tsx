@@ -177,9 +177,42 @@ export const LetterPreview = forwardRef<HTMLDivElement, LetterPreviewProps>(
               This is to certify that{' '}
               <strong>
                 {data.salutation} {data.internName}
-              </strong>{' '}
-              {data.academicYearDegree} ({data.departmentSpecialization}) at{' '}
-              {data.collegeNameAndLocation}, has successfully completed {pronounPossessive} internship in{' '}
+              </strong>
+              {(() => {
+                const degree = data.academicYearDegree?.trim() || '';
+                const dept = data.departmentSpecialization?.trim() || '';
+                const college = data.collegeNameAndLocation?.trim() || '';
+
+                let qual = '';
+                if (degree && dept) {
+                  qual = `${degree} (${dept})`;
+                } else if (degree) {
+                  qual = degree;
+                } else if (dept) {
+                  qual = `(${dept})`;
+                }
+
+                let inst = '';
+                if (college) {
+                  if (/^(at|from|of)\s+/i.test(college)) {
+                    inst = college;
+                  } else if (/\b(student|studying|pursuing)\b/i.test(degree)) {
+                    inst = `at ${college}`;
+                  } else {
+                    inst = `from ${college}`;
+                  }
+                }
+
+                if (qual && inst) {
+                  return `, ${qual} ${inst},`;
+                } else if (qual) {
+                  return `, ${qual},`;
+                } else if (inst) {
+                  return `, ${inst},`;
+                }
+                return '';
+              })()}{' '}
+              has successfully completed {pronounPossessive} internship in{' '}
               {data.domainRole} at our organization from {formatLongDate(data.startDate)} to{' '}
               {formatLongDate(data.completionDate)}.
             </p>

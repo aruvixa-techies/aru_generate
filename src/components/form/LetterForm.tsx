@@ -95,16 +95,34 @@ export const LetterForm: React.FC<LetterFormProps> = ({
       {/* Academic Details */}
       <div className="form-group">
         <label className="form-label" htmlFor="academicYearDegree">
-          <span>Student Year & Program <span className="required-star">*</span></span>
+          <span>Academic Status / Degree <span className="required-star">*</span></span>
         </label>
         <input
           id="academicYearDegree"
           className={`form-input ${errors.academicYearDegree ? 'has-error' : ''}`}
           type="text"
-          placeholder="e.g. a 3rd-year student of B.Tech."
+          placeholder="e.g. a 3rd-year student of B.Tech. or Graduate of B.Tech."
           value={formData.academicYearDegree}
           onChange={(e) => onChange('academicYearDegree', e.target.value)}
         />
+        <div className="preset-chip-list">
+          {[
+            'a 3rd-year student of B.Tech.',
+            'a Final-year student of B.Tech.',
+            'a Graduate of B.Tech.',
+            'Graduate',
+            'B.Tech. Graduate'
+          ].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              className="preset-chip"
+              onClick={() => onChange('academicYearDegree', preset)}
+            >
+              {preset}
+            </button>
+          ))}
+        </div>
         {errors.academicYearDegree && <span className="error-text">{errors.academicYearDegree}</span>}
       </div>
 
@@ -127,16 +145,21 @@ export const LetterForm: React.FC<LetterFormProps> = ({
 
       <div className="form-group">
         <label className="form-label" htmlFor="collegeNameAndLocation">
-          <span>College / Institution & City <span className="required-star">*</span></span>
+          <span>
+            College / Institution & City <span className="optional-badge">Optional</span>
+          </span>
         </label>
         <input
           id="collegeNameAndLocation"
           className={`form-input ${errors.collegeNameAndLocation ? 'has-error' : ''}`}
           type="text"
-          placeholder="e.g. Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College, Chennai"
+          placeholder="e.g. Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College, Chennai (or leave blank)"
           value={formData.collegeNameAndLocation}
           onChange={(e) => onChange('collegeNameAndLocation', e.target.value)}
         />
+        <span className="form-field-hint">
+          Suitable for both current students and graduated / passed-out interns. Leave blank if not affiliated with an institution.
+        </span>
         {errors.collegeNameAndLocation && (
           <span className="error-text">{errors.collegeNameAndLocation}</span>
         )}

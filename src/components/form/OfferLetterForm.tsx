@@ -114,16 +114,30 @@ export const OfferLetterForm: React.FC<OfferLetterFormProps> = ({
 
         <div className="form-group">
           <label className="form-label" htmlFor="yearOfStudy">
-            <span>Year of Study <span className="required-star">*</span></span>
+            <span>
+              Year of Study / Status <span className="optional-badge">Optional</span>
+            </span>
           </label>
           <input
             id="yearOfStudy"
             className={`form-input ${errors.yearOfStudy ? 'has-error' : ''}`}
             type="text"
-            placeholder="e.g. 3rd Year"
+            placeholder="e.g. 3rd Year, Final Year, or Graduate"
             value={formData.yearOfStudy}
             onChange={(e) => onChange('yearOfStudy', e.target.value)}
           />
+          <div className="preset-chip-list">
+            {['3rd Year', 'Final Year', 'Graduate', 'Passed Out'].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className="preset-chip"
+                onClick={() => onChange('yearOfStudy', preset)}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
           {errors.yearOfStudy && <span className="error-text">{errors.yearOfStudy}</span>}
         </div>
       </div>
@@ -131,16 +145,21 @@ export const OfferLetterForm: React.FC<OfferLetterFormProps> = ({
       <div className="form-row-2">
         <div className="form-group">
           <label className="form-label" htmlFor="collegeName">
-            <span>College / Institution Name <span className="required-star">*</span></span>
+            <span>
+              College / Institution Name <span className="optional-badge">Optional</span>
+            </span>
           </label>
           <input
             id="collegeName"
             className={`form-input ${errors.collegeName ? 'has-error' : ''}`}
             type="text"
-            placeholder="e.g. Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College"
+            placeholder="e.g. Vel Tech Dr. Rangarajan Dr. Sakunthala Engineering College (or leave blank)"
             value={formData.collegeName}
             onChange={(e) => onChange('collegeName', e.target.value)}
           />
+          <span className="form-field-hint">
+            Optional for interns who have already graduated or passed out.
+          </span>
           {errors.collegeName && <span className="error-text">{errors.collegeName}</span>}
         </div>
 

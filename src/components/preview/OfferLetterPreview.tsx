@@ -152,11 +152,24 @@ export const OfferLetterPreview = forwardRef<HTMLDivElement, OfferLetterPreviewP
             <div style={{ lineHeight: '1.45' }}>
               <p style={{ margin: '0 0 4px 0', fontWeight: 700 }}>To,</p>
               <div style={{ paddingLeft: '16px' }}>
-                <p style={{ margin: '0 0 2px 0' }}>{data.candidateName},</p>
-                <p style={{ margin: '0 0 2px 0' }}>{data.degreeAndBranch},</p>
-                <p style={{ margin: '0 0 2px 0' }}>{data.yearOfStudy},</p>
-                <p style={{ margin: '0 0 2px 0' }}>{data.collegeName},</p>
-                <p style={{ margin: 0 }}>{data.city}</p>
+                {[
+                  data.candidateName?.trim(),
+                  data.degreeAndBranch?.trim(),
+                  data.yearOfStudy?.trim(),
+                  data.collegeName?.trim(),
+                  data.city?.trim()
+                ]
+                  .filter(Boolean)
+                  .map((line, idx, arr) => (
+                    <p
+                      key={idx}
+                      style={{
+                        margin: idx === arr.length - 1 ? 0 : '0 0 2px 0'
+                      }}
+                    >
+                      {line}{idx < arr.length - 1 ? ',' : ''}
+                    </p>
+                  ))}
               </div>
             </div>
 

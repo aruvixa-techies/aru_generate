@@ -117,9 +117,9 @@ export const App: React.FC = () => {
   const validateCompletion = (): boolean => {
     const newErrors: ValidationErrors = {};
     if (!completionData.internName.trim()) newErrors.internName = "Intern's full name is required";
-    if (!completionData.academicYearDegree.trim()) newErrors.academicYearDegree = 'Student year & degree is required';
+    if (!completionData.academicYearDegree.trim()) newErrors.academicYearDegree = 'Academic qualification & degree is required';
     if (!completionData.departmentSpecialization.trim()) newErrors.departmentSpecialization = 'Branch is required';
-    if (!completionData.collegeNameAndLocation.trim()) newErrors.collegeNameAndLocation = 'College name is required';
+    // collegeNameAndLocation is optional to support passed out / graduated interns
     if (!completionData.domainRole.trim()) newErrors.domainRole = 'Domain is required';
     if (!completionData.startDate) newErrors.startDate = 'Start date is required';
     if (!completionData.completionDate) newErrors.completionDate = 'Completion date is required';
@@ -133,8 +133,7 @@ export const App: React.FC = () => {
     const newErrors: ValidationErrors = {};
     if (!offerData.candidateName.trim()) newErrors.candidateName = 'Candidate full name is required';
     if (!offerData.degreeAndBranch.trim()) newErrors.degreeAndBranch = 'Degree & branch is required';
-    if (!offerData.yearOfStudy.trim()) newErrors.yearOfStudy = 'Year of study is required';
-    if (!offerData.collegeName.trim()) newErrors.collegeName = 'College name is required';
+    // yearOfStudy and collegeName are optional to support passed out / graduated interns
     if (!offerData.city.trim()) newErrors.city = 'City is required';
     if (!offerData.department.trim()) newErrors.department = 'Department is required';
     if (!offerData.focusDomain.trim()) newErrors.focusDomain = 'Focus domain is required';
